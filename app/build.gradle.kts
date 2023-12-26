@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+
 android {
     namespace = "com.saad.invitation"
     compileSdk = 34
@@ -33,13 +34,26 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    buildFeatures{
+    buildFeatures {
         dataBinding = true
     }
+    packagingOptions {
+        exclude("META-INF/rxjava.properties")
+    }
+
 }
 
 dependencies {
 
+    //glide
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+//    implementation("com.theartofdev.edmodo:android-image-cropper:2.8.0")
+//    implementation("com.github.iamutkarshtiwari:Ananas:1.2.6")
+
+//    implementation("com.outsbook.libs:canvaseditor:1.0.0")
+
+    implementation("com.burhanrashid52:photoeditor:3.0.1")
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.appcompat:appcompat:1.6.1")
     implementation("com.google.android.material:material:1.11.0")
