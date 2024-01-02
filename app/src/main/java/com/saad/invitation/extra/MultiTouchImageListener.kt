@@ -1,4 +1,4 @@
-package com.saad.invitation
+package com.saad.invitation.extra
 
 import android.annotation.SuppressLint
 import android.graphics.Matrix
@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
+import com.saad.invitation.views.DEBUG_TAG
 
 
 class MultiTouchImageListener : View.OnTouchListener {

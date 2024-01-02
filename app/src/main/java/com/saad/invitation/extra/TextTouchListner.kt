@@ -1,4 +1,4 @@
-package com.saad.invitation
+package com.saad.invitation.extra
 
 import android.annotation.SuppressLint
 import android.graphics.Matrix
@@ -6,9 +6,10 @@ import android.graphics.PointF
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
-import android.widget.ImageView
+import android.widget.TextView
+import com.saad.invitation.views.DEBUG_TAG
 
-class ImageTouchListner : View.OnTouchListener {
+class TextTouchListner : View.OnTouchListener {
     // These matrices will be used to move and zoom image
     private val matrix: Matrix = Matrix()
     private val savedMatrix: Matrix = Matrix()
@@ -24,7 +25,7 @@ class ImageTouchListner : View.OnTouchListener {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
-        val view = v as ImageView
+        val view = v as TextView
         when (event.action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
                 Log.d(DEBUG_TAG, "ActionDown")
@@ -50,7 +51,7 @@ class ImageTouchListner : View.OnTouchListener {
                 matrix.postTranslate(dx, dy)
             }
         }
-        view.imageMatrix = matrix
+//        view. = matrix
         return true
     }
 }

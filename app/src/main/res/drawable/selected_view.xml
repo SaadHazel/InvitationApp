@@ -1,0 +1,75 @@
+<!-- res/drawable/selected_view.xml -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Dots in each corner -->
+    <item
+        android:right="0dp"
+        android:top="0dp"
+        android:gravity="right|top">
+        <shape android:shape="oval">
+            <size
+                android:width="8dp"
+                android:height="8dp" />
+            <solid android:color="@color/black" />
+        </shape>
+    </item>
+    <item
+        android:left="0dp"
+        android:top="0dp"
+        android:gravity="left|top">
+        <shape android:shape="oval">
+            <size
+                android:width="8dp"
+                android:height="8dp" />
+            <solid android:color="@color/black" />
+        </shape>
+    </item>
+    <item
+        android:right="0dp"
+        android:bottom="0dp"
+        android:gravity="right|bottom">
+        <shape android:shape="oval">
+            <size
+                android:width="8dp"
+                android:height="8dp" />
+            <solid android:color="@color/black" />
+        </shape>
+    </item>
+    <item
+        android:left="0dp"
+        android:bottom="0dp"
+        android:gravity="left|bottom">
+        <shape android:shape="oval">
+            <size
+                android:width="8dp"
+                android:height="8dp" />
+            <solid android:color="@color/black" />
+        </shape>
+    </item>
+    <!-- Border rectangle -->
+    <item>
+        <shape
+            android:shape="rectangle"
+            android:padding="2dp">
+            <stroke
+                android:width="2dp"
+                android:color="@color/blue" />
+        </shape>
+    </item>
+    <!-- Blur effect -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+            <padding android:left="2dp" android:top="2dp" android:right="2dp" android:bottom="2dp" />
+            <corners android:radius="2dp" />
+            <stroke
+                android:width="2dp"
+                android:color="@color/blue" />
+        </shape>
+    </item>
+    <!-- Background rectangle (transparent) -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="@android:color/transparent" />
+        </shape>
+    </item>
+</layer-list>

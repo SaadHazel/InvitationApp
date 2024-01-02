@@ -1,6 +1,7 @@
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.devtools.ksp")
 }
 
 
@@ -52,6 +53,19 @@ dependencies {
 //    implementation("com.github.iamutkarshtiwari:Ananas:1.2.6")
 
 //    implementation("com.outsbook.libs:canvaseditor:1.0.0")
+
+
+    //Save as pdf
+//    implementation("com.itextpdf:itextg:5.5.10")
+
+    implementation("io.insert-koin:koin-android:3.5.3")
+
+    //RetroFit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    //viewModel Lifecycle
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.6.2")
 
     implementation("com.burhanrashid52:photoeditor:3.0.1")
     implementation("androidx.core:core-ktx:1.12.0")
