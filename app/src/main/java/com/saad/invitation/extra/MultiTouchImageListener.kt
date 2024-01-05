@@ -8,6 +8,8 @@ import android.view.MotionEvent
 import android.view.View
 import android.widget.ImageView
 import com.saad.invitation.views.DEBUG_TAG
+import kotlin.math.max
+import kotlin.math.min
 
 
 class MultiTouchImageListener : View.OnTouchListener {
@@ -32,6 +34,7 @@ class MultiTouchImageListener : View.OnTouchListener {
     @SuppressLint("ClickableViewAccessibility")
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         val view = v as ImageView
+        val parent = view.parent as View
         when (event.action and MotionEvent.ACTION_MASK) {
             MotionEvent.ACTION_DOWN -> {
                 Log.d(DEBUG_TAG, "ActionDown")
@@ -72,6 +75,7 @@ class MultiTouchImageListener : View.OnTouchListener {
                 val dx = event.x - start.x
                 val dy = event.y - start.y
                 matrix.postTranslate(dx, dy)
+                checkBoundaries(view, parent)
             } else if (mode == ZOOM) {
                 val newDist = spacing(event)
                 if (newDist > 10f) {
@@ -128,4 +132,37 @@ class MultiTouchImageListener : View.OnTouchListener {
         val radians = Math.atan2(delta_y, delta_x)
         return Math.toDegrees(radians).toFloat()
     }
+
+    private fun checkBoundaries(imageView: ImageView, parent: View) {
+        val drawable = imageView.drawable
+        if (drawable != null) {
+            val matrixValues = FloatArray(9)
+            matrix.getValues(matrixValues)
+
+            val imageWidth = drawable.intrinsicWidth * matrixValues[Matrix.MSCALE_X]
+            val imageHeight = drawable.intrinsicHeight * matrixValues[Matrix.MSCALE_Y]
+
+            val parentWidth = parent.width.toFloat()
+            val parentHeight = parent.height.toFloat()
+
+            val translationX = matrixValues[Matrix.MTRANS_X]
+            val translationY = matrixValues[Matrix.MTRANS_Y]
+
+            val minX = min(0f, parentWidth - imageWidth)
+            val minY = min(0f, parentHeight - imageHeight)
+
+            val maxX = max(0f, parentWidth - imageWidth)
+            val maxY = max(0f, parentHeight - imageHeight)
+
+            val clampedTranslationX = translationX.coerceIn(minX, maxX)
+            val clampedTranslationY = translationY.coerceIn(minY, maxY)
+
+            matrix.postTranslate(
+                clampedTranslationX - translationX,
+                clampedTranslationY - translationY
+            )
+            imageView.imageMatrix = matrix
+        }
+    }
+
 }

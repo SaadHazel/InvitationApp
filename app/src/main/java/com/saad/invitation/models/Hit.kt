@@ -1,6 +1,13 @@
 package com.saad.invitation.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+
+@Entity(tableName = "cards")
 data class Hit(
+    @PrimaryKey(autoGenerate = true)
+    val roomId: Int,
     val collections: Int,
     val comments: Int,
     val downloads: Int,
@@ -22,5 +29,5 @@ data class Hit(
     val views: Int,
     val webformatHeight: Int,
     val webformatURL: String,
-    val webformatWidth: Int
+    val webformatWidth: Int,
 )

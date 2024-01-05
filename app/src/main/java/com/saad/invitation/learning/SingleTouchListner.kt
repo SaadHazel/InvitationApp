@@ -228,38 +228,33 @@ class SingleTouchListner(
         val inflater = LayoutInflater.from(v.context)
         val textLayout = inflater.inflate(R.layout.view_text_editor, null)
 
-        val leftTopIcon = textLayout.findViewById<ImageView>(R.id.imgPhotoEditorClose)
-        val rightTopIcon = textLayout.findViewById<ImageView>(R.id.img_right_top)
-        val rightBottomIcon = textLayout.findViewById<ImageView>(R.id.img_right_bottom)
-        val leftBottomIcon = textLayout.findViewById<ImageView>(R.id.img_left_bottom)
+        /* val leftTopIcon = textLayout.findViewById<ImageView>(R.id.imgPhotoEditorClose)
+         val rightTopIcon = textLayout.findViewById<ImageView>(R.id.img_right_top)
+         val rightBottomIcon = textLayout.findViewById<ImageView>(R.id.img_right_bottom)
+         val leftBottomIcon = textLayout.findViewById<ImageView>(R.id.img_left_bottom)
 
-        /*  rightTopIcon.setOnTouchListener(ZoomTouchListener(view))*/
-        rightBottomIcon.setOnClickListener {
-            Log.d(debug_tag, "RightBottom")
-        }
-        leftBottomIcon.setOnClickListener {
-            Log.d(debug_tag, "LeftBottom")
-        }
-        leftTopIcon.setOnClickListener {
-            Log.d(debug_tag, "LeftTop")
-        }
+         rightTopIcon.setOnTouchListener(ZoomTouchListener(view))
+         rightBottomIcon.setOnClickListener {
+             Log.d(debug_tag, "RightBottom")
+         }
+         leftBottomIcon.setOnClickListener {
+             Log.d(debug_tag, "LeftBottom")
+         }
+         leftTopIcon.setOnClickListener {
+             Log.d(debug_tag, "LeftTop")
+         }*/
+
         val textViewInLayout = textLayout.findViewById<TextView>(R.id.tvPhotoEditorText)
         textViewInLayout.text = view.text
 
-        Log.d(
-            debug_tag,
-            "View.textSize: ${view.textSize} || textViewSize: ${textViewInLayout.textSize}"
-        )
         val prevSize = view.textSize
         val currentSize = textViewInLayout.textSize
         val finalSize = prevSize - currentSize
+
         Log.d(debug_tag, "Final Size: $finalSize")
         textViewInLayout.setTextColor(Color.BLUE)
         textViewInLayout.textSize = finalSize
-        Log.d(
-            debug_tag,
-            "View.textSize: ${view.textSize} || textViewSize: ${textViewInLayout.textSize}"
-        )
+
         textViewInLayout.visibility = View.INVISIBLE
         v.background = createBitmapDrawableFromView(textLayout)
     }
@@ -271,14 +266,19 @@ class SingleTouchListner(
         val inflater = LayoutInflater.from(v.context)
         val frameLayout = inflater.inflate(R.layout.view_photo_editor, null)
 
+        Log.d(debug_tag, "ViewDrawable: ${view.drawable}")
         val imageViewInLayout = frameLayout.findViewById<ImageView>(R.id.imgPhotoEditorImage)
-
         imageViewInLayout.setImageDrawable(view.drawable)
+
+        Log.d(debug_tag, "ImageViewInLayout: ${imageViewInLayout.drawable}")
+
+        imageViewInLayout.visibility = View.INVISIBLE
 
         frameLayout.background = createBitmapDrawableFromView(frameLayout)
     }
 
     companion object {
+        @SuppressLint("StaticFieldLeak")
         var currentViewForDeletion: View? = null
     }
 

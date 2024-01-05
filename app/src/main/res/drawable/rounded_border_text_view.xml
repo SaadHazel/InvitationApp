@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Background Border -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#FFFFFF" />
+            <corners android:radius="5dp" />
+            <padding
+                android:bottom="3dp"
+                android:left="3dp"
+                android:right="3dp"
+                android:top="3dp" />
+        </shape>
+    </item>
+
+    <!-- Content (TextView) -->
+    <item android:top="3dp" android:left="3dp" android:right="3dp" android:bottom="3dp">
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvPhotoEditorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                tools:text="dummy" />
+
+            <!-- Close Button -->
+            <ImageView
+                android:id="@+id/imgPhotoEditorClose"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="top|start"
+                android:elevation="1dp"
+                android:src="@drawable/baseline_circle_24" />
+
+            <!-- Right Top Button -->
+            <ImageView
+                android:id="@+id/img_right_top"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="top|end"
+                android:elevation="1dp"
+                android:src="@drawable/baseline_circle_24" />
+
+            <!-- Right Bottom Button -->
+            <ImageView
+                android:id="@+id/img_right_bottom"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="bottom|end"
+                android:elevation="1dp"
+                android:src="@drawable/baseline_circle_24" />
+
+            <!-- Left Bottom Button -->
+            <ImageView
+                android:id="@+id/img_left_bottom"
+                android:layout_width="10dp"
+                android:layout_height="10dp"
+                android:layout_gravity="bottom|start"
+                android:elevation="1dp"
+                android:src="@drawable/baseline_circle_24" />
+
+        </FrameLayout>
+    </item>
+
+</layer-list>

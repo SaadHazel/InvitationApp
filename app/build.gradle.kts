@@ -58,6 +58,12 @@ dependencies {
     //Save as pdf
 //    implementation("com.itextpdf:itextg:5.5.10")
 
+
+    //room db
+    implementation("androidx.room:room-runtime:2.6.1")
+    annotationProcessor("androidx.room:room-compiler:2.6.1")
+    ksp("androidx.room:room-compiler:2.6.1")
+    //Koin
     implementation("io.insert-koin:koin-android:3.5.3")
 
     //RetroFit

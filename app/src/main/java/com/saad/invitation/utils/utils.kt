@@ -1,13 +1,18 @@
 package com.saad.invitation.utils
 
+import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.text.style.UnderlineSpan
+import android.util.Log
 import android.view.View
 import android.widget.EditText
+import com.saad.invitation.learning.debug_tag
 
 
 var isSelected: Int = 0
@@ -57,4 +62,26 @@ fun createBitmapDrawableFromView(view: View): BitmapDrawable {
     view.draw(canvas)
 
     return BitmapDrawable(view.resources, bitmap)
+}
+
+fun log(text: String) {
+    Log.d(debug_tag, text)
+}
+
+fun generateBitmapFromView(view: View): Bitmap {
+    val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    view.draw(canvas)
+    return bitmap
+}
+
+fun isInternetAvailable(context: Context): Boolean {
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+    val network = connectivityManager.activeNetwork
+    val capabilities = connectivityManager.getNetworkCapabilities(network)
+    return capabilities != null &&
+            (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) ||
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR))
 }

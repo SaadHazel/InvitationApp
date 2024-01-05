@@ -1,55 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<layout>
 
-    <FrameLayout
-        android:id="@+id/frmBorderText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="3dp"
-        android:background="@drawable/rounded_border_tv">
 
-        <TextView
-            android:id="@+id/tvPhotoEditorText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#000000"
-            tools:text="dummy" />
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/frmBorderText"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="3dp"
+            android:padding="30dp"
+            android:background="@drawable/rounded_border_tv">
+
+            <TextView
+                android:id="@+id/tvPhotoEditorText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                tools:text="dummy" />
+
+        </FrameLayout>
+
+        <ImageView
+            android:id="@+id/imgPhotoEditorClose"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_gravity="top|start"
+            android:elevation="1dp"
+            android:src="@drawable/baseline_circle_24" />
+
+        <ImageView
+            android:id="@+id/img_right_top_text"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_gravity="top|end"
+            android:elevation="1dp"
+            android:src="@drawable/dot" />
+
+        <ImageView
+            android:id="@+id/img_right_bottom"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_gravity="bottom|end"
+            android:elevation="1dp"
+            android:src="@drawable/baseline_circle_24" />
+
+        <ImageView
+            android:id="@+id/img_left_bottom"
+            android:layout_width="8dp"
+            android:layout_height="8dp"
+            android:layout_gravity="bottom|start"
+            android:elevation="1dp"
+            android:src="@drawable/baseline_circle_24" />
 
     </FrameLayout>
-
-    <ImageView
-        android:id="@+id/imgPhotoEditorClose"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_gravity="top|start"
-        android:elevation="1dp"
-        android:src="@drawable/baseline_circle_24" />
-
-    <ImageView
-        android:id="@+id/img_right_top"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_gravity="top|end"
-        android:elevation="1dp"
-        android:src="@drawable/baseline_circle_24" />
-
-    <ImageView
-        android:id="@+id/img_right_bottom"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_gravity="bottom|end"
-        android:elevation="1dp"
-        android:src="@drawable/baseline_circle_24" />
-
-    <ImageView
-        android:id="@+id/img_left_bottom"
-        android:layout_width="10dp"
-        android:layout_height="10dp"
-        android:layout_gravity="bottom|start"
-        android:elevation="1dp"
-        android:src="@drawable/baseline_circle_24" />
-
-</FrameLayout>
+</layout>

@@ -34,7 +34,7 @@ class ImageAdapter(private val itemList: List<Hit>, private val onItemClick: (St
             // Use Glide to load and display the image
             Glide.with(binding.root.context)
                 .load(hit.largeImageURL)
-                .centerCrop()
+                .centerInside()
                 .placeholder(R.drawable.baseline_cloud_download_24) // You can set a placeholder image
                 .into(binding.imageView1)
 
