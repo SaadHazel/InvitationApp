@@ -3,9 +3,15 @@ package com.saad.invitation.learning
 import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
-import com.saad.invitation.utils.log
+import com.saad.invitation.utils.logListener
 
-class BackgroundListener(private val onItemClick: (View) -> Unit) : View.OnTouchListener {
+const val listenerTag = "TouchEventPerformed"
+
+class BackgroundListener(
+
+    private val onItemClick: (View) -> Unit
+) :
+    View.OnTouchListener {
 
     private var lastX = 0f
     private var lastY = 0f
@@ -15,20 +21,21 @@ class BackgroundListener(private val onItemClick: (View) -> Unit) : View.OnTouch
         val parent = view.parent as View
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
-                log("Action Down")
+                logListener("Action Down")
                 lastX = event.rawX
                 lastY = event.rawY
             }
 
             MotionEvent.ACTION_MOVE -> {
-                log("Action Move")
+//                hideView.visibility = View.INVISIBLE
+                logListener("Action Move")
                 val deltaX = event.rawX - lastX
                 val deltaY = event.rawY - lastY
 
                 val newX = view.x + deltaX
                 val newY = view.y + deltaY
 
-                // Calculating the bounds of the cardView
+                // Calculating the bounds of the parent
                 val leftBound = parent.paddingLeft.toFloat()
                 val topBound = parent.paddingTop.toFloat()
                 val rightBound = (parent.width - parent.paddingRight - view.width).toFloat()
@@ -48,7 +55,7 @@ class BackgroundListener(private val onItemClick: (View) -> Unit) : View.OnTouch
 
 
             MotionEvent.ACTION_UP -> {
-                log("Action Up")
+                logListener("Action Up")
 
             }
         }

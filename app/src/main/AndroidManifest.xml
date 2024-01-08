@@ -24,7 +24,7 @@
         android:theme="@style/Theme.Invitation"
         tools:targetApi="31">
         <activity
-            android:name=".views.subviews.EditorActivity"
+            android:name=".views.EditorActivity"
             android:exported="false" />
         <activity
             android:name=".views.DragActivity"
