@@ -1,48 +1,73 @@
-package com.saad.invitation.learning
+package com.saad.invitation.views.dynamicviews
 
 import android.content.Context
 import android.graphics.Color
-import android.view.Gravity
 import android.view.View
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import com.saad.invitation.R
+import com.saad.invitation.learning.BackgroundListener
 import com.saad.invitation.utils.log
 
-class CustomConstraintLayout(context: Context) : ConstraintLayout(context) {
+class CustomConstraintLayout(context: Context, private val viewGroup: ConstraintLayout) :
+    ConstraintLayout(context) {
+    private lateinit var backgroundListener: BackgroundListener
 
     init {
         createLayout()
     }
 
     private fun createLayout() {
+
         val frmBorderText = createFrameLayout()
-        val tvPhotoEditorText = createTextView()
+        backgroundListener = BackgroundListener { }
+        this.setOnTouchListener(backgroundListener)
+
         val imgPhotoEditorClose = createImageView(R.drawable.dot)
         val imgRightTopText = createImageView(R.drawable.dot)
         val imgRightBottom = createImageView(R.drawable.dot)
         val imgLeftBottom = createImageView(R.drawable.dot)
         val imgRotate = createImageView(R.drawable.round_rotate_90_degrees_ccw_24)
         val layoutParams = ConstraintLayout.LayoutParams(
-            500,
-            500
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT
         )
+        val paddingSize = resources.getDimensionPixelSize(R.dimen.frame_layout_padding)
+
+        this.setPadding(paddingSize, paddingSize, paddingSize, paddingSize)
+
         this.setBackgroundColor(Color.BLUE)
         this.layoutParams = layoutParams
         // Add views to the ConstraintLayout
         addView(frmBorderText)
 
-        addView(imgRotate)
-        frmBorderText.addView(tvPhotoEditorText)
+        viewGroup.addView(imgRotate)
+//        addView(imgRotate)
+//        frmBorderText.addView(tvPhotoEditorText)
         addView(imgPhotoEditorClose)
         addView(imgRightTopText)
         addView(imgRightBottom)
         addView(imgLeftBottom)
 
-        // Create constraints
+        val layoutParamsImageRotate = ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT
+        )
+        val marginSize = resources.getDimensionPixelSize(R.dimen.rotate_img_margin)
+        layoutParamsImageRotate.setMargins(marginSize, 30, marginSize, marginSize)
+
+        imgRotate.layoutParams = layoutParamsImageRotate
+        clickListener(frmBorderText, "Clicked: FrameLayout")
+//        clickListener(tvPhotoEditorText, "Clicked: TextView")
+        clickListener(this, "Clicked: Constraint Layout")
+        frmBorderText.setBackgroundColor(Color.MAGENTA)
+        // Create constraints for parent
+        val constraintSetForParent = ConstraintSet()
+        constraintSetForParent.clone(viewGroup)
+
+        //Constraint for custom view
         val constraintSet = ConstraintSet()
         constraintSet.clone(this)
 
@@ -65,12 +90,12 @@ class CustomConstraintLayout(context: Context) : ConstraintLayout(context) {
             ConstraintSet.PARENT_ID,
             ConstraintSet.END
         )
-        constraintSet.connect(
-            frmBorderText.id,
-            ConstraintSet.BOTTOM,
-            ConstraintSet.PARENT_ID,
-            ConstraintSet.BOTTOM
-        )
+        /*     constraintSet.connect(
+                 frmBorderText.id,
+                 ConstraintSet.BOTTOM,
+                 ConstraintSet.PARENT_ID,
+                 ConstraintSet.BOTTOM
+             )*/
 
         // Constraints for imgPhotoEditorClose
         constraintSet.connect(
@@ -129,26 +154,35 @@ class CustomConstraintLayout(context: Context) : ConstraintLayout(context) {
         )
 
         //Constraints for imgRotate
-        constraintSet.connect(
-            imgRotate.id,
-            ConstraintSet.BOTTOM,
-            ConstraintSet.PARENT_ID,
-            ConstraintSet.BOTTOM
-        )
-        constraintSet.connect(
+        /*  constraintSet.connect(
+              imgRotate.id,
+              ConstraintSet.BOTTOM,
+              ConstraintSet.PARENT_ID,
+              ConstraintSet.BOTTOM
+          )*/
+        constraintSetForParent.connect(
             imgRotate.id,
             ConstraintSet.START,
-            ConstraintSet.PARENT_ID,
+            this.id,
             ConstraintSet.START
         )
-        constraintSet.connect(
+        constraintSetForParent.connect(
             imgRotate.id,
             ConstraintSet.END,
-            ConstraintSet.PARENT_ID,
+            this.id,
             ConstraintSet.END
+        )
+        constraintSetForParent.connect(
+            imgRotate.id,
+            ConstraintSet.TOP,
+            this.id,
+            ConstraintSet.BOTTOM
         )
 
         // Apply constraints
+        constraintSetForParent.applyTo(
+            viewGroup
+        )
         constraintSet.applyTo(this)
 
         // Add listeners
@@ -162,58 +196,65 @@ class CustomConstraintLayout(context: Context) : ConstraintLayout(context) {
 
     private fun createFrameLayout(): ConstraintLayout {
         val frameLayout = ConstraintLayout(context)
+        val paddingSize = resources.getDimensionPixelSize(R.dimen.frame_layout_padding)
+
+        frameLayout.setPadding(paddingSize, paddingSize, paddingSize, paddingSize)
         val layoutParams = ConstraintLayout.LayoutParams(
-            ConstraintLayout.LayoutParams.MATCH_PARENT,
-            ConstraintLayout.LayoutParams.MATCH_PARENT
+//            200,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT
         )
         frameLayout.id = View.generateViewId()
         frameLayout.layoutParams = layoutParams
-        // Set constraints to center the TextView
-        val constraintSet = ConstraintSet()
-        constraintSet.clone(this)
 
-        constraintSet.connect(
-            frameLayout.id,
-            ConstraintSet.TOP,
+        val tvPhotoEditorText = createTextView()
+        frameLayout.addView(tvPhotoEditorText)
+
+
+        val constraintSet = ConstraintSet()
+        constraintSet.clone(frameLayout)
+
+        constraintSet.center(
+            tvPhotoEditorText.id,
             ConstraintSet.PARENT_ID,
-            ConstraintSet.TOP
-        )
-        constraintSet.connect(
-            frameLayout.id,
-            ConstraintSet.BOTTOM,
-            ConstraintSet.PARENT_ID,
-            ConstraintSet.BOTTOM
-        )
-        constraintSet.connect(
-            frameLayout.id,
             ConstraintSet.START,
+            0,
             ConstraintSet.PARENT_ID,
-            ConstraintSet.START
-        )
-        constraintSet.connect(
-            frameLayout.id,
             ConstraintSet.END,
-            ConstraintSet.PARENT_ID,
-            ConstraintSet.END
+            0,
+            0.5f
         )
-        constraintSet.applyTo(this)
+        constraintSet.center(
+            tvPhotoEditorText.id,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.TOP,
+            0,
+            ConstraintSet.PARENT_ID,
+            ConstraintSet.BOTTOM,
+            0,
+            0.5f
+        )
+        constraintSet.applyTo(frameLayout)
+
         return frameLayout
     }
 
     private fun createTextView(): TextView {
         val textView = TextView(context)
-        val layoutParams = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.WRAP_CONTENT,
-            FrameLayout.LayoutParams.WRAP_CONTENT
+        val paddingSize = resources.getDimensionPixelSize(R.dimen.text_view_padding)
+
+        textView.setPadding(paddingSize, paddingSize, paddingSize, paddingSize)
+
+        val textViewLayoutParams = ConstraintLayout.LayoutParams(
+            ConstraintLayout.LayoutParams.WRAP_CONTENT,
+            ConstraintLayout.LayoutParams.WRAP_CONTENT
         )
 
-        layoutParams.gravity = Gravity.CENTER
-
         textView.id = View.generateViewId()
-        textView.layoutParams = layoutParams
-        textView.text = "dummy"
+        textView.layoutParams = textViewLayoutParams
+        textView.text = "dummygjgghjhgjghjgjgjghg"
         textView.setBackgroundResource(R.drawable.rounded_border_tv)
-
+//        textView.setBackgroundColor(Color.LTGRAY)
         return textView
     }
 
@@ -233,4 +274,12 @@ class CustomConstraintLayout(context: Context) : ConstraintLayout(context) {
     private fun showToast(message: String) {
         log(message)
     }
+
+    private fun clickListener(view: View, message: String) {
+        view.setOnClickListener {
+            log(message)
+        }
+    }
+
+
 }

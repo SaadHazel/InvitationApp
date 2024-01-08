@@ -1,4 +1,4 @@
-package com.saad.invitation.learning
+package com.saad.invitation.views.dynamicviews
 
 import android.content.Context
 import android.graphics.Color

@@ -7,6 +7,9 @@
 
     <style name="Theme.Invitation" parent="Base.Theme.Invitation" />
 
+
     <dimen name="text_view_padding">8dp</dimen>
-    <dimen name="text_view_margin">8dp</dimen>
+    <dimen name="frame_layout_padding">3dp</dimen>
+    <dimen name="constraint_layout_padding">3dp</dimen>
+    <dimen name="rotate_img_margin">8dp</dimen>
 </resources>

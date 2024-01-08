@@ -47,7 +47,6 @@ import com.saad.invitation.learning.isViewBeingDragged
 import com.saad.invitation.utils.createBitmapDrawableFromView
 import com.saad.invitation.utils.generateBitmapFromView
 import com.saad.invitation.utils.log
-import com.saad.invitation.views.subviews.EditorActivity
 import com.saad.invitation.views.subviews.MyBottomSheetDialogFragment
 
 

@@ -13,6 +13,7 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import com.saad.invitation.learning.debug_tag
+import com.saad.invitation.learning.listenerTag
 
 
 var isSelected: Int = 0
@@ -66,6 +67,10 @@ fun createBitmapDrawableFromView(view: View): BitmapDrawable {
 
 fun log(text: String) {
     Log.d(debug_tag, text)
+}
+
+fun logListener(text: String){
+    Log.d(listenerTag, text)
 }
 
 fun generateBitmapFromView(view: View): Bitmap {
