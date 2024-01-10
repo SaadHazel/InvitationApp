@@ -6,16 +6,16 @@ import com.saad.invitation.api.MyApi
 import com.saad.invitation.db.Appdb
 import com.saad.invitation.models.Hit
 import com.saad.invitation.utils.isInternetAvailable
+import com.saad.invitation.utils.log
 
 class RepoImpl(private val api: MyApi, private val db: Appdb, private val context: Context) : Repo {
     override val imagesLiveData = MutableLiveData<List<Hit>>()
 
-
     override suspend fun networkCheck() {
         if (!isInternetAvailable(context) || images.value != null) {
-            doDatabaseCallGet()
+            doDatabaseCallGet();
         } else {
-            doNetworkCall()
+            doNetworkCall();
         }
     }
 
@@ -25,9 +25,12 @@ class RepoImpl(private val api: MyApi, private val db: Appdb, private val contex
             if (response.isSuccessful) {
                 imagesLiveData.postValue(response.body()?.hits)
                 response.body()?.hits?.forEach { hit ->
-                    doDatabaseCallAdd(hit)
+                    val count = excludeSameImage(hit.id)
+                    log("Counter: $count")
+                    if (count == 0) {
+                        doDatabaseCallAdd(hit)
+                    }
                 }
-
             } else {
                 // Handle unsuccessful response here
             }
@@ -46,5 +49,9 @@ class RepoImpl(private val api: MyApi, private val db: Appdb, private val contex
         /*   db.designDao().getAll().forEach { hit ->
                imagesLiveData.postValue(hit)
            }*/
+    }
+
+    override suspend fun excludeSameImage(id: Int): Int {
+        return db.designDao().excludeSame(id)
     }
 }

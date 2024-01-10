@@ -56,7 +56,8 @@ class DragActivity : AppCompatActivity() {
     private var clickedFlag: Boolean = false
     private lateinit var imageviewDot: ImageView
     private lateinit var textLayout: View
-    private lateinit var relativeLayout: RelativeLayout
+
+    //    private lateinit var relativeLayout: RelativeLayout
     private var updateTouchListener: UpdatedTouchListner? = null
     private lateinit var binding: ActivityDragBinding
     private lateinit var secondBinding: ViewTextEditorBinding
@@ -71,9 +72,9 @@ class DragActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_drag)
         cardView = binding.cardView
-        relativeLayout = createRelativeLayout(this)
-        relativeLayout.setBackgroundResource(R.drawable.rounded_border_tv)
-        relativeLayout.setPadding(32, 32, 32, 32)
+//        relativeLayout = createRelativeLayout(this)
+//        relativeLayout.setBackgroundResource(R.drawable.rounded_border_tv)
+//        relativeLayout.setPadding(32, 32, 32, 32)
 
         val dotSize = 50 // Adjust the size of the dots as needed
 
@@ -82,7 +83,7 @@ class DragActivity : AppCompatActivity() {
         val paramsBottomRight = RelativeLayout.LayoutParams(dotSize, dotSize)
         paramsBottomRight.addRule(RelativeLayout.ALIGN_PARENT_END)
         paramsBottomRight.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM)
-        relativeLayout.addView(bottomRightDot, paramsBottomRight)
+//        relativeLayout.addView(bottomRightDot, paramsBottomRight)
         setClickListener(bottomRightDot, "Bottom-Right")
 
 
@@ -110,15 +111,14 @@ class DragActivity : AppCompatActivity() {
         Log.d("Selected Text", "oncreate clickedFlag: " + clickedFlag)
 
 
-
-        relativeLayout.setOnClickListener {
-
-            Log.d("Selected Text", "imagedot: ")
-        }
+//        relativeLayout.setOnClickListener {
+//
+//            Log.d("Selected Text", "imagedot: ")
+//        }
 
 
         updateTouchListener = UpdatedTouchListner { selectedText ->
-            selectedText as TextView
+            selectedText
             log("Selected Text: DragActivity")
 
 
@@ -185,6 +185,7 @@ class DragActivity : AppCompatActivity() {
             val intent = Intent(this, EditorActivity::class.java)
             startActivity(intent)
         }
+
         textViewFromSecondLayout.setOnClickListener {
             Toast.makeText(this, "Click on the edge", Toast.LENGTH_SHORT).show()
         }
@@ -208,8 +209,6 @@ class DragActivity : AppCompatActivity() {
                     val bitmap = generateBitmapFromView(myCardView)
                     val bottomSheetFragment = MyBottomSheetDialogFragment(bitmap, this)
                     bottomSheetFragment.show(supportFragmentManager, bottomSheetFragment.tag)
-
-
 
                     true
                 }
@@ -398,11 +397,11 @@ class DragActivity : AppCompatActivity() {
 
 
         val container = binding.cardView
-//        container.addView(newTextView)
-        container.addView(relativeLayout)
+        container.addView(newTextView)
+//        container.addView(relativeLayout)
         newTextView.setPadding(20)
-        newTextView.setBackgroundColor(Color.GRAY)
-        relativeLayout.addView(newTextView)
+        newTextView.setBackgroundResource(R.drawable.rounded_border_tv)
+//        relativeLayout.addView(newTextView)
 
     }
 
