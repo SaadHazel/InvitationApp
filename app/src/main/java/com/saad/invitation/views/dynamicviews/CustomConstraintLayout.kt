@@ -1,5 +1,6 @@
 package com.saad.invitation.views.dynamicviews
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
 import android.view.View
@@ -11,6 +12,7 @@ import com.saad.invitation.R
 import com.saad.invitation.learning.BackgroundListener
 import com.saad.invitation.utils.log
 
+@SuppressLint("ViewConstructor")
 class CustomConstraintLayout(context: Context, private val viewGroup: ConstraintLayout) :
     ConstraintLayout(context) {
     private lateinit var backgroundListener: BackgroundListener
@@ -19,6 +21,7 @@ class CustomConstraintLayout(context: Context, private val viewGroup: Constraint
         createLayout()
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun createLayout() {
 
         val frmBorderText = createFrameLayout()

@@ -4,8 +4,8 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.ImageView
-import android.widget.RelativeLayout
 import android.widget.TextView
 import com.saad.invitation.R
 import com.saad.invitation.utils.log
@@ -24,16 +24,16 @@ class UpdatedTouchListner(private val onItemClick: (View) -> Unit) : View.OnTouc
 
 
     override fun onTouch(view: View, event: MotionEvent): Boolean {
-        val generatedView = view as RelativeLayout
-        /*   when (view) {
-               is TextView -> view as TextView
-               is ImageView -> view as ImageView
-               else -> throw IllegalArgumentException("Unsupported view type")
-           }*/
+        val generatedView =
+            when (view) {
+                is TextView -> view as TextView
+                is ImageView -> view as ImageView
+                else -> throw IllegalArgumentException("Unsupported view type")
+            }
         val parent = generatedView.parent as View
         val allParent = view.parent as? ViewGroup ?: return false
 
-        val layoutParams = generatedView.layoutParams as RelativeLayout.LayoutParams
+        val layoutParams = generatedView.layoutParams as FrameLayout.LayoutParams
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {

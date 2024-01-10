@@ -8,8 +8,7 @@ import com.saad.invitation.utils.logListener
 const val listenerTag = "TouchEventPerformed"
 
 class BackgroundListener(
-
-    private val onItemClick: (View) -> Unit
+    private val onItemClick: (Boolean) -> Unit,
 ) :
     View.OnTouchListener {
 
@@ -27,6 +26,8 @@ class BackgroundListener(
             }
 
             MotionEvent.ACTION_MOVE -> {
+                onItemClick(false)
+
 //                hideView.visibility = View.INVISIBLE
                 logListener("Action Move")
                 val deltaX = event.rawX - lastX
@@ -55,6 +56,7 @@ class BackgroundListener(
 
 
             MotionEvent.ACTION_UP -> {
+                onItemClick(true)
                 logListener("Action Up")
 
             }

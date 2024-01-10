@@ -17,4 +17,6 @@ interface Repo {
 
     suspend fun doDatabaseCallGet()
 
+    suspend fun excludeSameImage(id: Int): Int
+
 }
