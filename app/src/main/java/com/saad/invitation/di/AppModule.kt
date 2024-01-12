@@ -2,6 +2,7 @@ package com.saad.invitation.di
 
 
 import androidx.room.Room
+import com.google.firebase.firestore.FirebaseFirestore
 import com.saad.invitation.api.MyApi
 import com.saad.invitation.db.Appdb
 import com.saad.invitation.repo.Repo
@@ -14,6 +15,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 val appModule = module {
+
+    single { FirebaseFirestore.getInstance() }
 
     single {
         Room.databaseBuilder(
@@ -30,7 +33,7 @@ val appModule = module {
     }
 
 
-    single<Repo> { RepoImpl(get(), get(), androidContext()) }
+    single<Repo> { RepoImpl(get(), get(), androidContext(), get()) }
 
     viewModel { MainViewModel(get()) }
 
