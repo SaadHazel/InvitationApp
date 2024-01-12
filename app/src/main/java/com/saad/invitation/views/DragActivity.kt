@@ -16,7 +16,6 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
@@ -39,15 +38,15 @@ import com.bumptech.glide.request.transition.Transition
 import com.saad.invitation.R
 import com.saad.invitation.databinding.ActivityDragBinding
 import com.saad.invitation.databinding.ViewTextEditorBinding
-import com.saad.invitation.learning.ResizableView
 import com.saad.invitation.learning.SingleTouchListner
 import com.saad.invitation.learning.UpdatedTouchListner
 import com.saad.invitation.learning.debug_tag
 import com.saad.invitation.learning.isViewBeingDragged
-import com.saad.invitation.utils.createBitmapDrawableFromView
 import com.saad.invitation.utils.generateBitmapFromView
 import com.saad.invitation.utils.log
+import com.saad.invitation.viewmodels.MainViewModel
 import com.saad.invitation.views.subviews.MyBottomSheetDialogFragment
+import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 const val DEBUG_TAG = "Gestures"
@@ -65,6 +64,8 @@ class DragActivity : AppCompatActivity() {
 
     //    private lateinit var mDetector: GestureDetectorCompat
     private lateinit var cardView: CardView
+    private val viewModel by viewModel<MainViewModel>()
+
 
     @RequiresApi(Build.VERSION_CODES.R)
     @SuppressLint("ClickableViewAccessibility", "UseCompatLoadingForDrawables", "InflateParams")
@@ -145,24 +146,80 @@ class DragActivity : AppCompatActivity() {
         val viewText = binding.etText
         val viewTextTwo = binding.etText2
 
-        val message = intent.getStringExtra("message_key")
+        val background = intent.getStringExtra("document_background")
+        val documentId = intent.getStringExtra("document_key")
+
+        viewModel.fetchSingleDocumentDataFromFireStore(documentId.toString())
+
+        viewModel.singleCardDesign.observe(this) { dataList ->
+            val data = dataList.arrayOfMaps
+            for (map in data) {
+                val viewData = map["data"] as? String
+                val viewType = map["viewtype"] as? String
+                val fontSize = map["size"] as? String
+                val color = map["color"] as? String
+                val fontFamily = map["fontfamily"] as? String
+                val xCoordinate = map["X"] as? String
+                val yCoordinate = map["Y"] as? String
+                val width = map["width"] as? String
+                val height = map["height"] as? String
+                if (viewType == "text") {
+                    xCoordinate?.toFloat()?.let { x ->
+                        yCoordinate?.toFloat()?.let { y ->
+                            fontSize?.toFloat()?.let { size ->
+                                viewData?.let { data ->
+                                    color?.let { color ->
+                                        addNewTextView(
+                                            data,
+                                            x,
+                                            y,
+                                            size,
+                                            color
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                } else if (viewType == "image") {
+
+                    viewData?.let {
+                        xCoordinate?.let { it1 ->
+                            yCoordinate?.let { it2 ->
+                                fontSize?.let { it3 ->
+                                    width?.let { width ->
+                                        height?.let { height ->
+                                            addNewImageView(
+                                                it,
+                                                it1.toFloat(),
+                                                it2.toFloat(),
+                                                it3.toFloat(),
+                                                width = width.toInt(),
+                                                height = height.toInt()
+                                            )
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+
+                }
+            }
+
+        }
+
         val imageString =
             "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQt74tgdFC3TA4w02EtPvNvwlPzBx-pOaE_X910ct5Jzg&s"
 
-        Glide.with(this)
-            .load(imageString)
-            .fitCenter()
-            .placeholder(R.drawable.ic_launcher_foreground)
-            .into(viewImage)
+        Glide.with(this).load(imageString).fitCenter()
+            .placeholder(R.drawable.ic_launcher_foreground).into(viewImage)
 
         viewImage.setOnTouchListener(SingleTouchListner())
 
-        Glide.with(this)
-            .asBitmap()
-            .load(message)
-            .fitCenter()
-            .placeholder(R.drawable.ic_launcher_foreground)
-            .into(object : CustomTarget<Bitmap>() {
+        Glide.with(this).asBitmap().load(background).fitCenter()
+            .placeholder(R.drawable.ic_launcher_foreground).into(object : CustomTarget<Bitmap>() {
                 override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
                     // Set the loaded bitmap as the background of the CardView
                     val drawable = BitmapDrawable(resources, resource)
@@ -242,8 +299,7 @@ class DragActivity : AppCompatActivity() {
              )
 
              viewImage.setOnTouchListener(multiTouchListener)
-     */
-        /*   viewImage.source.setImageResource(R.drawable.image2)
+     *//*   viewImage.source.setImageResource(R.drawable.image2)
 
            val mTextRobotoTf = ResourcesCompat.getFont(this, com.saad.invitation.R.font.roboto_medium)*/
 
@@ -284,8 +340,7 @@ class DragActivity : AppCompatActivity() {
         val relativeLayout = RelativeLayout(context)
         relativeLayout.layoutParams = RelativeLayout.LayoutParams(
 //            RelativeLayout.LayoutParams.WRAP_CONTENT,
-            400,
-            400
+            400, 400
         )
         return relativeLayout
     }
@@ -305,9 +360,7 @@ class DragActivity : AppCompatActivity() {
 
     fun Float.dpToPx(context: Context): Int {
         return TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            this,
-            context.resources.displayMetrics
+            TypedValue.COMPLEX_UNIT_DIP, this, context.resources.displayMetrics
         ).toInt()
     }
 
@@ -319,30 +372,46 @@ class DragActivity : AppCompatActivity() {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK) {
             val selectedImageUri: Uri? = data?.data
 
-            val newImageView = ImageView(this)
-            newImageView.id = View.generateViewId()
+            addNewImageView(imgUrl = selectedImageUri.toString())
+            /*            val newImageView = ImageView(this)
+                        newImageView.id = View.generateViewId()
 
-            Glide.with(this)
-                .load(selectedImageUri)
-                .centerInside()
-                .into(newImageView)
+                        Glide.with(this).load(selectedImageUri).centerInside().into(newImageView)*/
 
-            val layoutParams = ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-
-            layoutParams.width = 300
-            layoutParams.height = 300
-            newImageView.layoutParams = layoutParams
-            newImageView.scaleType = ImageView.ScaleType.MATRIX
-            newImageView.setOnTouchListener(updateTouchListener)
-
-            cardView.addView(newImageView)
 
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
+    private fun addNewImageView(
+        imgUrl: String = "",
+        x: Float = 200f,
+        y: Float = 300f,
+        imgSize: Float = 300f,
+        width: Int = 300,
+        height: Int = 300,
+    ) {
+
+        val newImageView = ImageView(this)
+        newImageView.id = View.generateViewId()
+
+        Glide.with(this).load(imgUrl).centerInside().into(newImageView)
+
+        val layoutParams = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
+        )
+
+        layoutParams.width = width
+        layoutParams.height = height
+
+        newImageView.x = x
+        newImageView.y = y
+
+        newImageView.layoutParams = layoutParams
+        newImageView.scaleType = ImageView.ScaleType.MATRIX
+        newImageView.setOnTouchListener(updateTouchListener)
+        cardView.addView(newImageView)
+    }
 
     private fun openGallery() {
         val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -354,9 +423,7 @@ class DragActivity : AppCompatActivity() {
         val editText = dialogView.findViewById<EditText>(R.id.editText)
         val btnOk = dialogView.findViewById<Button>(R.id.btnOk)
 
-        val dialog = AlertDialog.Builder(this)
-            .setView(dialogView)
-            .create()
+        val dialog = AlertDialog.Builder(this).setView(dialogView).create()
 
         editText.requestFocus()
 
@@ -381,16 +448,24 @@ class DragActivity : AppCompatActivity() {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    private fun addNewTextView(text: String) {
+    private fun addNewTextView(
+        text: String,
+        x: Float = 100f,
+        y: Float = 300f,
+        textSize: Float = 26f,
+        color: String = "#000000",
+    ) {
         val newTextView = TextView(this)
         newTextView.text = text
-        newTextView.textSize = 26f
+        newTextView.textSize = textSize
         newTextView.gravity = Gravity.CENTER
         newTextView.setTextColor(Color.BLACK)
         val layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
+            ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT
         )
+        newTextView.x = x // X-coordinate
+        newTextView.y = y // Y-coordinate
+        newTextView.setTextColor(Color.parseColor(color))
         newTextView.layoutParams = layoutParams
 
         newTextView.setOnTouchListener(updateTouchListener)
@@ -400,112 +475,112 @@ class DragActivity : AppCompatActivity() {
         container.addView(newTextView)
 //        container.addView(relativeLayout)
         newTextView.setPadding(20)
-        newTextView.setBackgroundResource(R.drawable.rounded_border_tv)
+
 //        relativeLayout.addView(newTextView)
 
     }
 
-    private fun setTextViewBackground(textView: TextView) {
-
-        val inflater = LayoutInflater.from(textView.context)
-        textLayout = inflater.inflate(R.layout.view_text_editor, null)
-        val textViewInLayout = textLayout.findViewById<TextView>(R.id.tvPhotoEditorText)
-        imageviewDot = textLayout.findViewById<ImageView>(R.id.img_right_top_text)
-        textViewInLayout.text = textView.text
-        textViewInLayout.setTextColor(Color.BLUE)
-        val finalSize = textView.textSize - textViewInLayout.textSize
-        textViewInLayout.textSize = finalSize
-
-        textViewInLayout.visibility = View.INVISIBLE
-        textView.background = createBitmapDrawableFromView(textLayout)
-        clickedFlag = true
-        Log.d("Selected Text", "setTextViewBackground clickedFlag: " + clickedFlag)
-
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private fun addResizableTextView(text: String) {
-        val container = ResizableView(this)
-
-        // Customize the inner TextView
-        val innerTextView = TextView(this)
-        innerTextView.text = text
-        innerTextView.textSize = 26f
-        innerTextView.gravity = Gravity.CENTER
-        innerTextView.setTextColor(Color.BLACK)
-
-        // Add the inner TextView to the ResizableView
-        container.addView(innerTextView)
-
-        // Set layout parameters for the ResizableView
-        val layoutParams = ViewGroup.LayoutParams(
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT
-        )
-        container.layoutParams = layoutParams
-
-        // Add the ResizableView to your container
-        binding.cardView.addView(container)
-
-        // Set touch listener for both ResizableView and inner TextView
-        container.setOnTouchListener { _, event ->
-            handleTouchEvent(container, event)
-        }
-
-        innerTextView.setOnTouchListener { _, event ->
-            handleTouchEvent(container, event)
-        }
-    }
-
-    private fun handleTouchEvent(container: ResizableView, event: MotionEvent): Boolean {
-        when (event.action) {
-            MotionEvent.ACTION_DOWN -> {
-                container.startX = event.rawX - container.translationX
-                container.startY = event.rawY - container.translationY
-                container.originalWidth = container.width.toFloat()
-                container.originalHeight = container.height.toFloat()
-                container.selectedEdge =
-                    container.getSelectedEdge(container.startX, container.startY)
-            }
-
-            MotionEvent.ACTION_MOVE -> {
-                if (container.selectedEdge != null) {
-                    // Resize the container based on the drag
-                    val offsetX = event.rawX - container.startX
-                    val offsetY = event.rawY - container.startY
-
-                    val newWidth = calculateNewDimension(
-                        container.originalWidth,
-                        offsetX,
-                        container.MIN_SIZE.toFloat(),
-                        container.MAX_SIZE.toFloat()
-                    )
-                    val newHeight = calculateNewDimension(
-                        container.originalHeight,
-                        offsetY,
-                        container.MIN_SIZE.toFloat(),
-                        container.MAX_SIZE.toFloat()
-                    )
-
-                    val layoutParams = container.layoutParams
-                    layoutParams.width = newWidth.toInt()
-                    layoutParams.height = newHeight.toInt()
-                    container.layoutParams = layoutParams
-
-                    container.invalidate()
-                } else {
-                    // Move the container based on the drag
-                    container.translationX = event.rawX - container.startX
-                    container.translationY = event.rawY - container.startY
-                }
-            }
-
-            MotionEvent.ACTION_UP -> {
-                container.selectedEdge = null
-            }
-        }
-        return true
-    }
+//    private fun setTextViewBackground(textView: TextView) {
+//
+//        val inflater = LayoutInflater.from(textView.context)
+//        textLayout = inflater.inflate(R.layout.view_text_editor, null)
+//        val textViewInLayout = textLayout.findViewById<TextView>(R.id.tvPhotoEditorText)
+//        imageviewDot = textLayout.findViewById<ImageView>(R.id.img_right_top_text)
+//        textViewInLayout.text = textView.text
+//        textViewInLayout.setTextColor(Color.BLUE)
+//        val finalSize = textView.textSize - textViewInLayout.textSize
+//        textViewInLayout.textSize = finalSize
+//
+//        textViewInLayout.visibility = View.INVISIBLE
+//        textView.background = createBitmapDrawableFromView(textLayout)
+//        clickedFlag = true
+//        Log.d("Selected Text", "setTextViewBackground clickedFlag: " + clickedFlag)
+//
+//    }
+//
+//    @SuppressLint("ClickableViewAccessibility")
+//    private fun addResizableTextView(text: String) {
+//        val container = ResizableView(this)
+//
+//        // Customize the inner TextView
+//        val innerTextView = TextView(this)
+//        innerTextView.text = text
+//        innerTextView.textSize = 26f
+//        innerTextView.gravity = Gravity.CENTER
+//        innerTextView.setTextColor(Color.BLACK)
+//
+//        // Add the inner TextView to the ResizableView
+//        container.addView(innerTextView)
+//
+//        // Set layout parameters for the ResizableView
+//        val layoutParams = ViewGroup.LayoutParams(
+//            ViewGroup.LayoutParams.WRAP_CONTENT,
+//            ViewGroup.LayoutParams.WRAP_CONTENT
+//        )
+//        container.layoutParams = layoutParams
+//
+//        // Add the ResizableView to your container
+//        binding.cardView.addView(container)
+//
+//        // Set touch listener for both ResizableView and inner TextView
+//        container.setOnTouchListener { _, event ->
+//            handleTouchEvent(container, event)
+//        }
+//
+//        innerTextView.setOnTouchListener { _, event ->
+//            handleTouchEvent(container, event)
+//        }
+//    }
+//
+//    private fun handleTouchEvent(container: ResizableView, event: MotionEvent): Boolean {
+//        when (event.action) {
+//            MotionEvent.ACTION_DOWN -> {
+//                container.startX = event.rawX - container.translationX
+//                container.startY = event.rawY - container.translationY
+//                container.originalWidth = container.width.toFloat()
+//                container.originalHeight = container.height.toFloat()
+//                container.selectedEdge =
+//                    container.getSelectedEdge(container.startX, container.startY)
+//            }
+//
+//            MotionEvent.ACTION_MOVE -> {
+//                if (container.selectedEdge != null) {
+//                    // Resize the container based on the drag
+//                    val offsetX = event.rawX - container.startX
+//                    val offsetY = event.rawY - container.startY
+//
+//                    val newWidth = calculateNewDimension(
+//                        container.originalWidth,
+//                        offsetX,
+//                        container.MIN_SIZE.toFloat(),
+//                        container.MAX_SIZE.toFloat()
+//                    )
+//                    val newHeight = calculateNewDimension(
+//                        container.originalHeight,
+//                        offsetY,
+//                        container.MIN_SIZE.toFloat(),
+//                        container.MAX_SIZE.toFloat()
+//                    )
+//
+//                    val layoutParams = container.layoutParams
+//                    layoutParams.width = newWidth.toInt()
+//                    layoutParams.height = newHeight.toInt()
+//                    container.layoutParams = layoutParams
+//
+//                    container.invalidate()
+//                } else {
+//                    // Move the container based on the drag
+//                    container.translationX = event.rawX - container.startX
+//                    container.translationY = event.rawY - container.startY
+//                }
+//            }
+//
+//            MotionEvent.ACTION_UP -> {
+//                container.selectedEdge = null
+//            }
+//        }
+//        return true
+//    }
 
     private fun calculateNewDimension(
         originalDimension: Float,
@@ -517,10 +592,7 @@ class DragActivity : AppCompatActivity() {
         return newDimension.coerceIn(minSize, maxSize)
     }
 
-
     companion object {
         private const val PICK_IMAGE_REQUEST = 1
     }
-
-
 }

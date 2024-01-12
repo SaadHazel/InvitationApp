@@ -4,7 +4,6 @@ import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.saad.invitation.R
@@ -33,19 +32,21 @@ class UpdatedTouchListner(private val onItemClick: (View) -> Unit) : View.OnTouc
         val parent = generatedView.parent as View
         val allParent = view.parent as? ViewGroup ?: return false
 
-        val layoutParams = generatedView.layoutParams as FrameLayout.LayoutParams
+//        val layoutParams = generatedView.layoutParams as ConstraintLayout.LayoutParams
 
         when (event.action) {
             MotionEvent.ACTION_DOWN -> {
                 lastX = event.rawX
                 lastY = event.rawY
+                log("lastX: $lastX")
+                log("lastY: $lastY")
 
-//                resetBackgroundForAllViews(allParent)
+                resetBackgroundForAllViews(allParent)
 
                 if (generatedView is TextView) {
 //                    generatedView.setBackgroundResource(R.drawable.rounded_border_tv)
 //                    setTextViewBackground(generatedView)
-//                    generatedView.setBackgroundResource(R.drawable.rounded_border_tv)
+                    generatedView.setBackgroundResource(R.drawable.rounded_border_tv)
 
 //                    setSelectedTextViewListener()
 
@@ -58,22 +59,41 @@ class UpdatedTouchListner(private val onItemClick: (View) -> Unit) : View.OnTouc
             MotionEvent.ACTION_MOVE -> {
                 when (event.pointerCount) {
                     1 -> {
+                        /*    val deltaX = event.rawX - lastX
+                            val deltaY = event.rawY - lastY
+
+                            // Calculate new position
+                            val newX = layoutParams.leftMargin + deltaX
+                            val newY = layoutParams.topMargin + deltaY
+
+                            // Adjust position to stay within parent bounds
+                            val maxX = parent.width - generatedView.width
+                            val maxY = parent.height - generatedView.height
+
+                            layoutParams.leftMargin = newX.coerceIn(0f, maxX.toFloat()).toInt()
+                            layoutParams.topMargin = newY.coerceIn(0f, maxY.toFloat()).toInt()
+                            // Apply new layout parameters
+                            generatedView.layoutParams = layoutParams
+
+                            lastX = event.rawX
+                            lastY = event.rawY*/
+
                         val deltaX = event.rawX - lastX
                         val deltaY = event.rawY - lastY
 
                         // Calculate new position
-                        val newX = layoutParams.leftMargin + deltaX
-                        val newY = layoutParams.topMargin + deltaY
+                        val newX = view.x + deltaX
+                        val newY = view.y + deltaY
 
                         // Adjust position to stay within parent bounds
-                        val maxX = parent.width - generatedView.width
-                        val maxY = parent.height - generatedView.height
+                        val maxX = (view.parent as View).width - view.width
+                        val maxY = (view.parent as View).height - view.height
 
-                        layoutParams.leftMargin = newX.coerceIn(0f, maxX.toFloat()).toInt()
-                        layoutParams.topMargin = newY.coerceIn(0f, maxY.toFloat()).toInt()
+                        val clampedX = newX.coerceIn(0f, maxX.toFloat())
+                        val clampedY = newY.coerceIn(0f, maxY.toFloat())
 
-                        // Apply new layout parameters
-                        generatedView.layoutParams = layoutParams
+                        view.x = clampedX
+                        view.y = clampedY
 
                         lastX = event.rawX
                         lastY = event.rawY

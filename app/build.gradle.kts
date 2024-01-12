@@ -2,6 +2,7 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
     id("com.google.devtools.ksp")
+    id("com.google.gms.google-services")
 }
 
 
@@ -58,9 +59,13 @@ dependencies {
     //Save as pdf
 //    implementation("com.itextpdf:itextg:5.5.10")
 
-
+    //Lottie
+    implementation("com.airbnb.android:lottie:6.3.0")
     //room db
     implementation("androidx.room:room-runtime:2.6.1")
+    implementation("com.google.firebase:firebase-firestore:24.10.0")
+    implementation("androidx.navigation:navigation-fragment-ktx:2.7.6")
+    implementation("androidx.navigation:navigation-ui-ktx:2.7.6")
     annotationProcessor("androidx.room:room-compiler:2.6.1")
     ksp("androidx.room:room-compiler:2.6.1")
     //Koin
