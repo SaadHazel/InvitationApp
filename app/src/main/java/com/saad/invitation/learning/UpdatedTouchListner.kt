@@ -7,9 +7,13 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.saad.invitation.R
+import com.saad.invitation.eventsrecycler.UpdateTouchListenerCallback
 import com.saad.invitation.utils.log
 
-class UpdatedTouchListner(private val onItemClick: (View) -> Unit) : View.OnTouchListener {
+class UpdatedTouchListner(
+    private val callback: UpdateTouchListenerCallback,
+    private val onItemClick: (Boolean) -> Unit,
+) : View.OnTouchListener {
 
     private lateinit var textLayout: View
     private var dotTop: ImageView? = null
@@ -57,6 +61,8 @@ class UpdatedTouchListner(private val onItemClick: (View) -> Unit) : View.OnTouc
 
 
             MotionEvent.ACTION_MOVE -> {
+                onItemClick(true)
+
                 when (event.pointerCount) {
                     1 -> {
                         /*    val deltaX = event.rawX - lastX
@@ -97,6 +103,7 @@ class UpdatedTouchListner(private val onItemClick: (View) -> Unit) : View.OnTouc
 
                         lastX = event.rawX
                         lastY = event.rawY
+
                     }
 
                     2 -> {
@@ -130,9 +137,9 @@ class UpdatedTouchListner(private val onItemClick: (View) -> Unit) : View.OnTouc
 
             MotionEvent.ACTION_UP -> {
                 log("Selected Text: ACTION_UP")
-                onItemClick.invoke(generatedView)
+                log("ViewType: ${view.javaClass.simpleName}")
+                callback.onDrag(view)
 
-//                setTextViewBackground(generatedView as TextView)
             }
         }
 

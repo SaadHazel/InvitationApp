@@ -20,10 +20,11 @@ class RepoImpl(
 
     ) : Repo {
 
-
+    override val _loading = MutableLiveData<Boolean>()
     override val cardDesignLiveData = MutableLiveData<List<CardDesignModel>>()
     override val singleCardItemsLiveData = SingleLiveEvent<SingleCardItemsModel>()
     override val imagesLiveData = MutableLiveData<List<Hit>>()
+
     private val weddingCardsCollection = firestore.collection("wedding_cards_designs")
     override suspend fun networkCheck() {
         if (!isInternetAvailable(context) || images.value != null) {
@@ -97,6 +98,7 @@ class RepoImpl(
     }
 
     override suspend fun fetchAllDocumentsDataFromFireStore() {
+        _loading.postValue(true)
         weddingCardsCollection.get().addOnSuccessListener { result ->
             val allCardsList = mutableListOf<CardDesignModel>()
 
@@ -108,6 +110,7 @@ class RepoImpl(
                 allCardsList.add(customModel)
             }
             cardDesignLiveData.postValue(allCardsList)
+            _loading.postValue(false)
         }
             .addOnFailureListener {
                 log("Error getting document")

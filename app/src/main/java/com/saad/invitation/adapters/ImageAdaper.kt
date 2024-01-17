@@ -40,8 +40,7 @@ class ImageAdapter(
                 .centerInside()
                 .placeholder(R.drawable.baseline_cloud_download_24) // You can set a placeholder image
                 .into(binding.imageView1)
-
-
+            
             binding.executePendingBindings()
         }
     }
