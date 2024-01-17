@@ -117,27 +117,27 @@ class DragActivity : AppCompatActivity() {
 //            Log.d("Selected Text", "imagedot: ")
 //        }
 
-
-        updateTouchListener = UpdatedTouchListner { selectedText ->
-            selectedText
-            log("Selected Text: DragActivity")
+//Uncomment this listner to start working
+//        updateTouchListener = UpdatedTouchListner { selectedText ->
+//            selectedText
+//            log("Selected Text: DragActivity")
 
 
 //            setTextViewBackground(selectedText)
 
-            /*  secondBinding = ViewTextEditorBinding.inflate(layoutInflater)
-              val textViewInLayout = secondBinding.tvPhotoEditorText
-              textViewInLayout.text = selectedText.text
-              val finalSize = selectedText.textSize - textViewInLayout.textSize
+        /*  secondBinding = ViewTextEditorBinding.inflate(layoutInflater)
+          val textViewInLayout = secondBinding.tvPhotoEditorText
+          textViewInLayout.text = selectedText.text
+          val finalSize = selectedText.textSize - textViewInLayout.textSize
 
-              textViewInLayout.textSize = finalSize
-              textViewInLayout.visibility = View.INVISIBLE*/
+          textViewInLayout.textSize = finalSize
+          textViewInLayout.visibility = View.INVISIBLE*/
 
 //            selectedText.setBackgroundResource(R.drawable.rounded_border_tv)
-            /* secondBinding.imgRightTop.setOnClickListener {
-                 log("This is log for clicking")
-             }*/
-        }
+        /* secondBinding.imgRightTop.setOnClickListener {
+             log("This is log for clicking")
+         }*/
+//        }
 //        mDetector = GestureDetectorCompat(this, SingleTouchListner(null, null))
 
         Log.d(debug_tag, "$isViewBeingDragged")

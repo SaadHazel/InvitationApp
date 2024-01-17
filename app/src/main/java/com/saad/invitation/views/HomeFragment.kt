@@ -11,12 +11,12 @@ import com.saad.invitation.R
 import com.saad.invitation.adapters.ImageAdapter
 import com.saad.invitation.databinding.FragmentHomeBinding
 import com.saad.invitation.viewmodels.MainViewModel
-import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.activityViewModel
 
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
-    private val viewModel by viewModel<MainViewModel>()
+    private val viewModel by activityViewModel<MainViewModel>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -28,13 +28,24 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.designs.observe(requireActivity()) { design ->
+
+        viewModel.loading.observe(viewLifecycleOwner) { isLoading ->
+            if (isLoading) {
+                binding.loadingAnim.visibility = View.VISIBLE
+                binding.recyclerView.visibility = View.GONE
+
+            } else {
+                binding.loadingAnim.visibility = View.GONE
+                binding.recyclerView.visibility = View.VISIBLE
+
+            }
+        }
+        viewModel.designs.observe(viewLifecycleOwner) { design ->
             val adapter = ImageAdapter(design) { background, documentId ->
                 onListItemClick(background, documentId)
             }
             binding.recyclerView.layoutManager = GridLayoutManager(requireContext(), 2)
             binding.recyclerView.adapter = adapter
-
 
         }
         /*   viewModel.images.observe(requireActivity()) { imagelist ->

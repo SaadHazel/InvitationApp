@@ -7,11 +7,14 @@ import com.saad.invitation.models.SingleCardItemsModel
 
 interface Repo {
 
+    val _loading: LiveData<Boolean>
+    val loading: LiveData<Boolean>
+        get() = _loading
 
     val imagesLiveData: LiveData<List<Hit>>
     val images: LiveData<List<Hit>>
         get() = imagesLiveData
-    
+
 
     val cardDesignLiveData: LiveData<List<CardDesignModel>>
     val designs: LiveData<List<CardDesignModel>>
@@ -21,6 +24,7 @@ interface Repo {
     val singleCardItemsLiveData: LiveData<SingleCardItemsModel>
     val singleDesigns: LiveData<SingleCardItemsModel>
         get() = singleCardItemsLiveData
+
 
     suspend fun networkCheck()
 
